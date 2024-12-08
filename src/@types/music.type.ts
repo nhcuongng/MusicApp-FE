@@ -4,3 +4,5 @@ export type MusicItem = {
   artist: string;
   thumbnail: string;
 };
+
+export type MusicTab = 'Home' | 'Library' | 'Search' | 'Profile';

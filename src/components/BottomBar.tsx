@@ -1,33 +1,35 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useMemo} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {COLOR_PALETTE, SPACING} from '../constants/styles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useMusicStore} from '../store/music';
+import {TAB_LIST} from '../constants/music';
 
-type TBottomBarProps = {};
+const BottomBar = () => {
+  const {changeTab, tab} = useMusicStore();
 
-const BottomBar = (props: TBottomBarProps) => {
-  const styleActive = {color: COLOR_PALETTE.PRIMARY};
+  const tabList = useMemo(() => {
+    return TAB_LIST.map(({icon, label, key}) => {
+      const styleActive =
+        tab === key
+          ? {
+              color: COLOR_PALETTE.PRIMARY,
+              border: '1',
+            }
+          : {};
+      return (
+        <TouchableOpacity
+          onPress={() => changeTab(key)}
+          style={[styles.item]}
+          key={key}>
+          <Icon style={styleActive} name={icon} size={20} />
+          <Text style={[styles.titleMenuBar, styleActive]}>{label}</Text>
+        </TouchableOpacity>
+      );
+    });
+  }, [tab, changeTab]);
 
-  return (
-    <View style={styles.bottomBarWrapper}>
-      <View style={[styles.item]}>
-        <Icon style={styleActive} name="home" size={20} />
-        <Text style={[styles.titleMenuBar, styleActive]}>Home</Text>
-      </View>
-      <View style={styles.item}>
-        <Icon name="list-sharp" size={20} />
-        <Text style={styles.titleMenuBar}>Library</Text>
-      </View>
-      <View style={styles.item}>
-        <Icon name="search-sharp" size={20} />
-        <Text style={styles.titleMenuBar}>Search</Text>
-      </View>
-      <View style={styles.item}>
-        <Icon name="person-sharp" size={20} />
-        <Text style={styles.titleMenuBar}>Profile</Text>
-      </View>
-    </View>
-  );
+  return <View style={styles.bottomBarWrapper}>{tabList}</View>;
 };
 
 const styles = StyleSheet.create({
